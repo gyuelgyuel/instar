@@ -1,0 +1,26 @@
+{% load bootstrap5 %}
+<div class="card-footer">
+    {% if user.is_authenticated %}
+        <p class="comment-input">
+            <input type="text" style="width: 16rem; padding-right: 25px;">
+            <i class="fa-solid fa-arrow-right" data-post-id="{{post.id}}" style="color:rgb(74, 157, 235); margin-left:-25px;"></i>
+        </p>
+        <hr>
+    {% endif %}
+    <div class="comment-list" id="{{post.id}}">
+        {% for comment in post.comment_set.all %}
+            <div>
+                <div class="d-inline">
+                <img src="{{comment.user.profile_image.url}}" alt="" class="rounded-circle" width="25px">
+                <a href="{% url 'accounts:profile' username=comment.user %}" class="text-reset text-decoration-none">
+                    {{comment.user}}</a>
+                : {{comment.content}} {{comment.created_at|timesince}} ago
+                </div>
+                {% if user == comment.user %}
+                    <button class="btn btn-outline-primary btn-sm btn-update" data-comment-id="{{comment.id}}" data-post-id="{{post.id}}" data-img-url="{{user.profile_image.url}}">수정</button>
+                {% endif %}
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+</div>

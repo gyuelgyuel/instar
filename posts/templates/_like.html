@@ -1,0 +1,12 @@
+{{post.user}}
+{% if user in post.like_users.all %}
+    <p style="display:inline; float:right; margin:0px">
+        <i class="fa-solid fa-heart" data-post-id="{{post.id}}" style="color: #e60000;text-align:right"></i>
+        {{post.like_users.all|length}}
+    </p>
+{% else %}
+    <p style="display:inline; float:right; margin:0px">
+        <i class="fa-regular fa-heart" data-post-id="{{post.id}}" style="color: #e28383;text-align:right"></i>
+        {{post.like_users.all|length}}
+    </p>
+{% endif %}

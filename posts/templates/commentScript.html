@@ -1,0 +1,41 @@
+<script>
+    const commentButtons = document.querySelectorAll('i.fa-solid.fa-arrow-right')
+    commentButtons.forEach(commentButton => {
+      commentButton.addEventListener('click', e => {
+        let postId = e.target.dataset.postId
+        CommentRequest(e.target, postId)
+      })
+    })
+    let CommentRequest = async (button, postId) => {
+      // django를 통해 POST로 request 요청
+      content = button.previousSibling.previousSibling.value
+      let response = await fetch(`${postId}/comments/create-async/`, {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{csrf_token}}",
+        },
+        body: JSON.stringify(content)
+      })
+      let result = await response.json()
+      console.log(result)
+      let commentUsername = result.user
+      let commentProfileUrl = result.profile
+      let commentContent = result.content
+      let commentFormUrl = `/accounts/${commentUsername}/`
+    
+      let commentForm = `
+      <div>
+        <div class="d-inline">
+        <img src="${commentProfileUrl}" alt="" class="rounded-circle" width="25px">
+        <a href="${commentFormUrl}" class="text-reset text-decoration-none">
+            ${commentUsername}</a>
+        : ${commentContent} (new)
+        </div>
+      </div>
+      `
+      let commentFormDOM = new DOMParser().parseFromString(commentForm, "text/html").body.firstElementChild;
+      let commentListElement = document.getElementById(postId)
+      commentListElement.appendChild(commentFormDOM)
+    }
+</script>

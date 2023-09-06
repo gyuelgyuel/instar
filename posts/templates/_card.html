@@ -1,0 +1,15 @@
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    <p>
+      <img src="{{post.user.profile_image.url}}" alt="" class="rounded-circle" width="50px">
+      <a href="{% url 'accounts:profile' username=post.user %}" class="text-reset text-decoration-none">{{post.user}}</a>
+    </p>
+  </div>
+  <img src="{{post.image.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <p class="card-text">{{post.content}}</p>
+    {% include '_like.html' %}
+    <p class="card-text" style="float:right;">{{post.created_at|timesince}} ago</p>
+  </div>
+  {% include '_comment.html' %}
+</div>

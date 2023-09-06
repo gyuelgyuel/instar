@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load bootstrap5 %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-4">
+    <img src="{{user_info.profile_image.url}}" alt="" class="img-fluid rounded-circle">
+  </div>
+  <div class="col-8">
+    <div class="row">
+      <div class="col-3">{{user_info.username}}</div>
+      {% if user != user_info %}
+      <div class="col-3">
+        {% if user in user_info.followers.all %}
+        <a href="{% url 'accounts:follow' username=user_info.username%}" class="btn btn-primary btn-sm">
+          팔로잉
+        </a>
+        {% else %}
+        <a href="{% url 'accounts:follow' username=user_info.username%}" class="btn btn-secondary btn-sm">
+          팔로우
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="col"><p class="btn btn-secondary btn-sm">게시물 {{user_info.post_set.all|length}}</p></div>
+      <div class="col">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            팔로워 {{user_info.followers.all|length}}
+          </button>
+          <ul class="dropdown-menu">
+            {% for user_temp in user_info.followers.all %}
+              <li><p class="dropdown-item">{{user_temp.username}}</p></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            팔로우 {{user_info.followings.all|length}}
+          </button>
+          <ul class="dropdown-menu">
+            {% for user_temp in user_info.followings.all %}
+              <li><p class="dropdown-item">{{user_temp.username}}</p></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-3">
+  {% for post in user_info.post_set.all %}
+  <div class="col">
+    <div class="card">
+      <img src="{{post.image.url}}" alt="">
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

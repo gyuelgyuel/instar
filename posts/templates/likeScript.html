@@ -1,0 +1,31 @@
+<script>
+const likeButtons = document.querySelectorAll('i.fa-solid.fa-heart, i.fa-regular.fa-heart')
+    likeButtons.forEach(likeButton => {
+      likeButton.addEventListener('click', e => {
+        let postId = e.target.dataset.postId
+        likeRequest(e.target, postId)
+      })
+    })
+    let likeRequest = async (button, postId) => {
+      // django를 통해 request 요청
+      let response = await fetch(`/posts/${postId}/like-async/`)
+      let result = await response.json()
+      console.log(response)
+      console.log(result)
+      console.log(button.nextSibling)
+      console.log(button.nextSibling.textContent)
+      // request 응답에 따라 좋아요 버튼 수정
+      if (result.status){
+        button.classList.remove('fa-regular')
+        button.classList.add('fa-solid')
+        button.style.color = '#e60000'
+      }
+      else{
+        button.classList.remove('fa-solid')
+        button.classList.add('fa-regular')
+        button.style.color = '#e28383'
+      }
+      button.nextSibling.textContent = " " + result.count
+
+    }
+</script>
