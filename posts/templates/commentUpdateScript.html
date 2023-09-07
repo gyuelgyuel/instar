@@ -13,38 +13,43 @@
             const postId = dataset.postId
             const commentId = dataset.commentId
             const imageUrl = dataset.imgUrl
+            const commentContent = dataset.commentContent
 
             // 댓글 수정을 위한 폼 요청 함수 호출
-            getCommentUpdateForm(e.target, postId, commentId, imageUrl)
+            getCommentUpdateForm(e.target, postId, commentId, imageUrl, commentContent)
 
         })
     })
 
 
     // django 서버에 form을 요청하여 화면에 보여주는 함수
-    const getCommentUpdateForm = async (button, postId, commentId, imageUrl) => {
+    const getCommentUpdateForm = async (button, postId, commentId, imageUrl, commentContent) => {
         // 이벤트가 발생한 버튼의 부모를 안보이게 설정(원본댓글)
         const commentDiv = button.parentElement
         commentDiv.classList.add('d-none')
 
+
         // form요청 (GET)
         commentFormURL = `/posts/${postId}/comments/${commentId}/update/`
-        const response = await fetch(commentFormURL)
-        const djangoCommentForm = await response.text()
+        // const response = await fetch(commentFormURL)
+        // const djangoCommentForm = await response.text()
         const csrftoken = getCookie('csrftoken');
 
         const commentForm = `
         <form action="${commentFormURL}" method="POST" class='d-inline' id="commentForm${commentId}">
             <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
-            ${djangoCommentForm}
+            <input type="text" name="content" style="width: 16rem; padding-right: 25px;">
         </form>
         `
+
         // string 형태의 form을 javascript에서 사용 할 수 있는 DOM 형태로 변경
         const commentFormDOM = new DOMParser().parseFromString(commentForm, "text/html").body.firstElementChild;
 
         // submit 버튼 생성
-        const submitButton = document.createElement('input')
-        submitButton.setAttribute('type', 'submit')
+        const submitButton = document.createElement('i')
+        submitButton.setAttribute('class', 'fa-solid fa-arrow-right')
+        submitButton.setAttribute('data-post-id', postId)
+        submitButton.setAttribute('style', 'color:rgb(74, 157, 235); margin-left:-25px;')
         // submit 이벤트리스너 등록 (새로운 데이터 입력 후 제출버튼을 눌렀을 때 동작)
         submitButton.addEventListener('click', async (e)=>{
             // HTML form tag가 기본적으로 가지고 있는 이벤트를 무시하기 위한 코드
@@ -80,13 +85,16 @@
 
         })
 
-
+        const originContent = commentFormDOM.querySelector('input[name="content"]')
+        originContent.setAttribute('value', commentContent)
         commentFormDOM.appendChild(submitButton)
+        const brtag = document.createElement('br')
+        commentFormDOM.appendChild(brtag)
 
         // commentFormDOM 화면에 출력
         const commentLi = button.parentElement.parentElement
         console.log(commentLi)
-        commentLi.appendChild(commentFormDOM)
+        commentLi.insertBefore(commentFormDOM, commentDiv)
     }
 
     // django 서버로 fetch를 이용하여 댓글 수정 POST요청 전송하는 함수

@@ -4,6 +4,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 # Create your views here.
 
 def signup(request):
@@ -47,15 +48,20 @@ def logout(request):
     auth_logout(request)
     return redirect('accounts:login')
 
-def profile(request, username):
+def profile(request, username, choice):
     User = get_user_model()
     user_info = User.objects.get(username=username)
 
+    if choice==1:
+        myselect = True
+    else:
+        myselect = False
     context = {
         'user_info': user_info,
+        'choice': myselect,
     }
-
-    return render(request, 'accounts/profile.html', context)
+    
+    return render(request, 'profile.html', context)
 
 @login_required
 def follow(request, username):
@@ -63,7 +69,30 @@ def follow(request, username):
     you = get_user_model().objects.get(username=username)
     if you in me.followings.all():
         me.followings.remove(you)
+        status = False
     else:
         me.followings.add(you)
+        status = True
+    context = {
+        'status': status,
+        'count': len(you.followers.all()),
+    }
 
-    return redirect('accounts:profile', username)
+    return JsonResponse(context)
+
+# def follow_async(request, post_id):
+#     user = request.user
+#     post = Post.objects.get(id=post_id)
+#     if post in user.like_posts.all():
+#         post.like_users.remove(user)
+#         status = False
+#     else:
+#         post.like_users.add(user)
+#         status = True
+
+#     context = {
+#         'status': status,
+#         'count': len(post.like_users.all()),
+#     }
+
+#     return JsonResponse(context)

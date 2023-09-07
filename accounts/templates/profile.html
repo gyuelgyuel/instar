@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load bootstrap5 %}
+
+{% block body %}
+<div class="row" style="display:flex;justify-content: center;">
+  <div class="col-4">
+    <img src="{{user_info.profile_image.url}}" alt="" class="img-fluid rounded-circle">
+  </div>
+  <div class="col-8">
+    <div class="row">
+      <div class="col-4">{{user_info.username}}</div>
+      {% if user != user_info %}
+      <div class="col-4">
+        {% if user in user_info.followers.all %}
+        <div class="btn btn-outline-success btn-sm follow" data-username="{{user_info.username}}">
+          팔로잉
+        </div>
+        {% else %}
+        <div class="btn btn-primary btn-sm follow" data-username="{{user_info.username}}">
+          팔로우
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="row">
+      <div class="col"><p class="badge bg-secondary" style="padding:1em;">게시물 {{user_info.post_set.all|length}}</p></div>
+      <div class="col">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Modal1">
+          팔로워 {{user_info.followers.all|length}}
+        </button>
+
+        <div class="modal fade" id="Modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">팔로워 목록</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% for user_temp in user_info.followers.all %}
+                  <p><img src="{{user_temp.profile_image.url}}" alt="" class="rounded-circle" width="25px">
+                    <a href="{% url 'accounts:profile' username=user_temp.username choice=1 %}" class="text-reset text-decoration-none">
+                      {{user_temp.username}}</a>
+                  </p>
+                {% endfor %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Modal2">
+          팔로우 {{user_info.followings.all|length}}
+        </button>
+
+        <div class="modal fade" id="Modal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">팔로우 목록</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% for user_temp in user_info.followings.all %}
+                  <p><img src="{{user_temp.profile_image.url}}" alt="" class="rounded-circle" width="25px">
+                    <a href="{% url 'accounts:profile' username=user_temp.username choice=1 %}" class="text-reset text-decoration-none">
+                      {{user_temp.username}}</a>
+                  </p>
+                {% endfor %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class='col-5'>
+  </div>
+  <div class="col-2">
+    <a href="{% url 'accounts:profile' username=user_info.username choice=1 %}"><i class="fa-solid fa-user" data-username="{{user_info.username}}"></i></a>
+  </div>
+  <div class="col-5">
+    <a href="{% url 'accounts:profile' username=user_info.username choice=2 %}"><i class="fa-solid fa-heart-circle-check" data-username="{{user_info.username}}" style="color: #e60000;"></i></a>
+  </div>
+</div>
+{% if choice %}
+  {% include 'mypost.html' %}
+{% else %}
+  {% include 'likepost.html' %}
+{% endif %}
+
+{% include 'likeScript.html' %}
+{% include 'profileScript.html' %}
+
+{% endblock %}

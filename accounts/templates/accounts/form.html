@@ -16,6 +16,8 @@
     <input type="submit" class="btn btn-primary">
     {% if request.resolver_match.url_name == 'login' %}
         <a href="{% url 'accounts:signup' %}">signup</a>
+    {% elif request.resolver_match.url_name == 'signup' %}
+        <a href="{% url 'accounts:login' %}">login</a>
     {% endif %}
 </form>
 

@@ -1,0 +1,30 @@
+<script>
+  // 팔로우 버튼 변환, 팔로워 숫자 갱신
+  // find follow div element
+  const followButton = document.querySelector('div.follow')
+  followButton.addEventListener('click', e => {
+    let pfUser = e.target.dataset.username
+    followRequest(e.target, pfUser)
+  })
+
+  // request to django
+  let followRequest = async(button, username) => {
+    let response = await fetch(`/accounts/${username}/follow/`)
+    let result = await response.json()
+    console.log(result)
+    if (result.status){
+      button.classList.remove('btn-primary')
+      button.classList.add('btn-outline-success')
+      button.innerHTML = "팔로잉"
+    }
+    else {
+      button.classList.remove('btn-outline-success')
+      button.classList.add('btn-primary')
+      button.innerHTML = "팔로우"
+    }
+    followNumButton = document.querySelector('div.follow-num')
+    followNumButton.innerHTML = `팔로워 ${result.count}`
+  }
+
+  const followingButton = document.querySelector('div.following-num')
+</script>

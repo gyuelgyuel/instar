@@ -12,13 +12,20 @@
             <div>
                 <div class="d-inline">
                 <img src="{{comment.user.profile_image.url}}" alt="" class="rounded-circle" width="25px">
-                <a href="{% url 'accounts:profile' username=comment.user %}" class="text-reset text-decoration-none">
+                <a href="{% url 'accounts:profile' username=comment.user choice=1 %}" class="text-reset text-decoration-none">
                     {{comment.user}}</a>
-                : {{comment.content}} {{comment.created_at|timesince}} ago
+                : {{comment.content}}
                 </div>
                 {% if user == comment.user %}
-                    <button class="btn btn-outline-primary btn-sm btn-update" data-comment-id="{{comment.id}}" data-post-id="{{post.id}}" data-img-url="{{user.profile_image.url}}">수정</button>
+                    <button class="btn btn-outline-primary btn-sm btn-update"
+                        data-comment-id="{{comment.id}}" 
+                        data-post-id="{{post.id}}" 
+                        data-img-url="{{user.profile_image.url}}"
+                        data-comment-content="{{comment.content}}">
+                        수정
+                    </button>
                 {% endif %}
+                <br> {{comment.created_at|timesince}} ago
             </div>
             <br>
         {% endfor %}

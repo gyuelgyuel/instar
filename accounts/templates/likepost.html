@@ -1,0 +1,27 @@
+<hr>
+
+<div class="row row-cols-3">
+  {% for post in user_info.like_posts.all %}
+  <div class="col">
+    <div class="card">
+      <img src="{{post.image.url}}" alt="">
+
+
+      {% if user in post.like_users.all %}
+      <div class="d-inline" style="display:inline; float:right; margin:-24px 0px 0px 5px;">
+        <i class="fa-solid fa-heart" data-post-id="{{post.id}}" style="color: #e60000;text-align:right"></i>
+        {{post.like_users.all|length}}
+      </div>
+      {% else %}
+      <div class="d-inline" style="display:inline; float:right; margin:-24px 0px 0px 5px;">
+        <i class="fa-regular fa-heart" data-post-id="{{post.id}}" style="color: #e28383;text-align:right"></i>
+        {{post.like_users.all|length}}
+      </div>
+      {% endif %}
+
+
+      
+    </div>
+  </div>
+  {% endfor %}
+</div>
